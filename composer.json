@@ -1,0 +1,12 @@
+{
+    "name": "sapistudio/audimmi",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.6",
+        "sapistudio/http": "^3.3"
+    },
+    "autoload": {
+         "psr-4": { "SapiStudio\\AudiMMI\\": "src/" }
+    }
+}
