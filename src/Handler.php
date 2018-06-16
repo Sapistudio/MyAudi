@@ -131,7 +131,7 @@ class Handler
         if (!is_array($params))
             throw new \InvalidArgumentException('Params should be an associative array.');
         $url        = (substr($source, 0, 4) === 'http') ? $url : self::CAR_URL.$url;
-        $url        = str_replace(['{csid}','{vin}'],[$this->primaryCsid,$this->primaryVin],$url);
+        $url        = str_replace(['{csid}','{vin}'],[$this->getPrimaryCsid(),$this->getPrimaryVin()],$url);
         $response   = false;
         switch ($method){
             case 'GET':
@@ -236,8 +236,44 @@ class Handler
         $this->authToken    = $this->login();
         $vehicles           = $this->getVehicles();
         if($vehicles){
-            $this->primaryVin   = $vehicles->getUserVINsResponse->CSIDVins[0]->VIN;
-            $this->primaryCsid  = $vehicles->getUserVINsResponse->CSIDVins[0]->CSID;
+            $this->setPrimaryVin($vehicles->getUserVINsResponse->CSIDVins[0]->VIN);
+            $this->setPrimaryCsid($vehicles->getUserVINsResponse->CSIDVins[0]->CSID);
         }
+    }
+    
+    /**
+     * Handler::setPrimaryVin()
+     * 
+     * @return void
+     */
+    public function setPrimaryVin($vin = null){
+        $this->primaryVin = $vin;
+    }
+    
+    /**
+     * Handler::getPrimaryVin()
+     * 
+     * @return
+     */
+    public function getPrimaryVin(){
+        return $this->primaryVin;
+    }
+    
+    /**
+     * Handler::setPrimaryCsid()
+     * 
+     * @return void
+     */
+    public function setPrimaryCsid($csid = null){
+        $this->primaryCsid = $csid;
+    }
+    
+    /**
+     * Handler::getPrimaryCsid()
+     * 
+     * @return
+     */
+    public function getPrimaryCsid(){
+        return $this->primaryCsid;
     }
 }
