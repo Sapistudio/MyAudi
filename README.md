@@ -1,5 +1,7 @@
 # AudiMMI
 
+This library provides access to the Audi Connect API.
+
 
 
 ```php
