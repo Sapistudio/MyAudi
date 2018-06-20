@@ -4,7 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.6",
-        "sapistudio/http": "^3.3"
+        "sapistudio/restapi": "^1.0"
     },
     "autoload": {
          "psr-4": { "SapiStudio\\AudiMMI\\": "src/" }
