@@ -6,10 +6,13 @@ use \Lazer\Classes\LazerException as FileException;
 
 class FileBase
 {
+    /**
+     * FileBase::loadDatabase()
+     * 
+     * @param mixed $databaseName
+     * @return
+     */
     public static function loadDatabase($databaseName = null){
-        if (!defined('LAZER_DATA_PATH')) {
-            define('LAZER_DATA_PATH', realpath(__DIR__).DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR);//file system database path
-        }
         try{
             Validate::table($databaseName)->exists();
         }catch(FileException $e){
@@ -23,5 +26,16 @@ class FileBase
             }
         }
         return Database::table($databaseName);
+    }
+    
+    /**
+     * FileBase::setDatabasePath()
+     * 
+     * @return void
+     */
+    public static function setDatabasePath(){
+        if (!defined('LAZER_DATA_PATH')) {
+            define('LAZER_DATA_PATH', realpath(__DIR__).DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR);//file system database path
+        }
     }
 }
