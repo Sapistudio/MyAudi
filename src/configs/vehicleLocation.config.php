@@ -1,8 +1,9 @@
 <?php
 return [
-    'id'            => 'integer', 
     'dateadded'     => 'string', 
-    'positionlat'   => 'string',
-    'positionlon'   => 'string',
+    'currentlat'    => 'string',
+    'currentlon'    => 'string',
+    'startinglat'   => 'string',
+    'startinglon'   => 'string',
     'parkingtime'   => 'string'
 ];
