@@ -2,7 +2,7 @@
 namespace SapiStudio\AudiMMI;
 use \Lazer\Classes\Database;
 use \Lazer\Classes\Helpers\Validate;
-use \Lazer\Classes\LazerException as FileException;
+use \Lazer\Classes\LazerException;
 
 class FileBase extends Database
 {
@@ -15,14 +15,14 @@ class FileBase extends Database
     public static function loadDatabase($databaseName = null){
         try{
             Validate::table($databaseName)->exists();
-        }catch(FileException $e){
+        }catch(LazerException $e){
             try{
                 $configFile = __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';
                 if(!file_exists($configFile))
                     return false;
                 $databaseConfig = require __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';  
                 self::create($databaseName, $databaseConfig);
-            }catch(FileException $e){
+            }catch(LazerException $e){
                 return false;
             }
         }
@@ -67,7 +67,11 @@ class FileBase extends Database
      */
     public function getEntry($entryId = null)
     {
-        $data = (is_int($entryId)) ? (array)$this->find($entryId)->set : $this->asArray();
+        try{
+            $data = (is_int($entryId)) ? (array)$this->find($entryId)->set : $this->asArray();
+        }catch(LazerException $e){
+            $data = [];
+        }
         $this->clearQuery();
         return json_decode(json_encode($data));
     }
