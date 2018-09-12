@@ -8,6 +8,9 @@ class Handler extends AbstractHttpClient
     const CAR_URL   = 'https://msg.audi.de/fs-car';
     const COMPANY   = 'Audi';
     const COUNTRY   = 'DE';
+    
+    const LOCATION_DATABASE   = 'vehicleLocation';
+    
     protected $responseFormat = 'json';
     protected static $username;
     protected static $password;
@@ -51,6 +54,17 @@ class Handler extends AbstractHttpClient
      * @return
      */
     public function loadPosition(){
+        $position = $this->get("/bs/cf/v1/".self::COMPANY."/".self::COUNTRY."/vehicles/{vin}/position");
+        $database = FileBase::loadDatabase(DatabaseConfig::LOCATION_DATABASE);
+        $lastEntry = $database->getEntry($database->lastId());
+        print_R($lastEntry);
+        
+        
+        $database->addEntry([
+    'date' => 434, 
+    'positionlat' => 'string',
+    'positionlon' => 'sadasdas'
+]);
         return $this->get("/bs/cf/v1/".self::COMPANY."/".self::COUNTRY."/vehicles/{vin}/position");
     }
     
@@ -132,8 +146,6 @@ class Handler extends AbstractHttpClient
      */
     public function __construct($credentials){
         FileBase::setDatabasePath();
-        $database =  FileBase::loadDatabase('dadssdd');
-        print_R($database);die();
         parent::__construct();
         $this->setOption('http_errors',false);
         $this->setHeaders([
