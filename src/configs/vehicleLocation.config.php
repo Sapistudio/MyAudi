@@ -1,6 +1,6 @@
 <?php
 return [
-    'dateadded'     => 'string', 
+    'dateupdated'   => 'string', 
     'currentlat'    => 'string',
     'currentlon'    => 'string',
     'startinglat'   => 'string',
