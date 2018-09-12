@@ -60,28 +60,18 @@ class Handler extends AbstractHttpClient
         $carResponse    = $position['findCarResponse'];
         $database       = FileBase::loadDatabase(DatabaseConfig::LOCATION_DATABASE);
         $lastEntry      = $database->getEntry($database->lastId());
-        print_R($lastEntry);
-        
-        
-        $database->addEntry([
-            'dateadded'     => date("Y-m-d H:i"), 
-            'positionlat'   => self::coordinateConverter($carResponse->Position->carCoordinate->latitude),
-            'positionlon'   => self::coordinateConverter($carResponse->Position->carCoordinate->longitude),
-            'parkingtime'   => date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC)),
-        ]);
-        return $this->get("/bs/cf/v1/".self::COMPANY."/".self::COUNTRY."/vehicles/{vin}/position");
+        $parkingTime    = date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC));
+        if(!isset($lastEntry->parkingtime) || $lastEntry->parkingtime !== $parkingTime){
+            $database->addEntry([
+                'dateadded'     => date("Y-m-d H:i"), 
+                'positionlat'   => self::coordinateConverter($carResponse->Position->carCoordinate->latitude),
+                'positionlon'   => self::coordinateConverter($carResponse->Position->carCoordinate->longitude),
+                'parkingtime'   => date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC)),
+            ]);
+        }
+        return $carResponse;
     }
     
-    /**
-     * Handler::coordinateConverter()
-     * 
-     * @param mixed $coordinateNumber
-     * @return
-     */
-    public static function coordinateConverter($coordinateNumber){
-        $dot = strlen($coordinateNumber)-6;
-        return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
-    }
     /**
      * Handler::vehicleMgmt()
      * 
@@ -141,6 +131,18 @@ class Handler extends AbstractHttpClient
         return $url;
     }
     
+    
+    /**
+     * Handler::coordinateConverter()
+     * 
+     * @param mixed $coordinateNumber
+     * @return
+     */
+    public static function coordinateConverter($coordinateNumber){
+        $dot = strlen($coordinateNumber)-6;
+        return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
+    }
+                
     /**
      * Handler::configure()
      * 
