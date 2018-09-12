@@ -131,6 +131,7 @@ class Handler extends AbstractHttpClient
      * @return
      */
     public function __construct($credentials){
+        FileBase::setDatabasePath();
         $database =  FileBase::loadDatabase('dadssdd');
         print_R($database);die();
         parent::__construct();
