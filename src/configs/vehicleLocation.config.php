@@ -1,1 +1,7 @@
-g['id' => 'integer','date' => 'integer','positionLat' => 'string','positionLon' => 'string']
+<?php
+return [
+    'id' => 'integer', 
+    'date' => 'integer', 
+    'positionLat' => 'string',
+    'positionLon' => 'string'
+];
