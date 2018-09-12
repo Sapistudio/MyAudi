@@ -1,7 +1,7 @@
 <?php
 return [
-    'id' => 'integer', 
-    'date' => 'string', 
-    'positionLat' => 'string',
-    'positionLon' => 'string'
+    'id'            => 'integer', 
+    'date'          => 'string', 
+    'positionlat'   => 'string',
+    'positionlon'   => 'string'
 ];
