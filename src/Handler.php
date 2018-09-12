@@ -55,19 +55,33 @@ class Handler extends AbstractHttpClient
      */
     public function loadPosition(){
         $position = $this->get("/bs/cf/v1/".self::COMPANY."/".self::COUNTRY."/vehicles/{vin}/position");
-        $database = FileBase::loadDatabase(DatabaseConfig::LOCATION_DATABASE);
-        $lastEntry = $database->getEntry($database->lastId());
+        if(!$position['findCarResponse'])
+            return false;
+        $carResponse    = $position['findCarResponse'];
+        $database       = FileBase::loadDatabase(DatabaseConfig::LOCATION_DATABASE);
+        $lastEntry      = $database->getEntry($database->lastId());
         print_R($lastEntry);
         
         
         $database->addEntry([
-    'date' => 434, 
-    'positionlat' => 'string',
-    'positionlon' => 'sadasdas'
-]);
+            'dateadded'     => date("Y-m-d H:i"), 
+            'positionlat'   => self::coordinateConverter($carResponse->Position->carCoordinate->latitude),
+            'positionlon'   => self::coordinateConverter($carResponse->Position->carCoordinate->longitude),
+            'parkingtime'   => date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC)),
+        ]);
         return $this->get("/bs/cf/v1/".self::COMPANY."/".self::COUNTRY."/vehicles/{vin}/position");
     }
     
+    /**
+     * Handler::coordinateConverter()
+     * 
+     * @param mixed $coordinateNumber
+     * @return
+     */
+    public static function coordinateConverter($coordinateNumber){
+        $dot = strlen($coordinateNumber)-6;
+        return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
+    }
     /**
      * Handler::vehicleMgmt()
      * 
