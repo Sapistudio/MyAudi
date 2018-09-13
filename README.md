@@ -11,5 +11,6 @@ $configure = [
     'username' => 'user',
     'password' => 'pass'
 ];
+(new SapiStudio\AudiMMI\tripHistory(Handler::configure($configure)))->checkingStatus();
 Handler::configure($configure)->loadPosition();
 ```
