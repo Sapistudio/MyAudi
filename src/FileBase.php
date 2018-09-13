@@ -20,7 +20,7 @@ class FileBase extends Database
                 $configFile = __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';
                 if(!file_exists($configFile))
                     return false;
-                $databaseConfig         = require __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';
+                $databaseConfig         = require __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.db.php';
                 $databaseConfig[DatabaseConfig::UNIQUE_IDENTIFIER]  = 'integer';
                 self::create($databaseName, $databaseConfig);
             }catch(LazerException $e){
