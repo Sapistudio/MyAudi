@@ -4,6 +4,6 @@ use \SapiStudio\RestApi\AbstractHttpClient;
 
 class DatabaseConfig
 {
-    const LOCATION_DATABASE   = 'vehicleLocation'; 
-    const UNIQUE_IDENTIFIER   = 'id'; 
+    const HISTORY_DATABASE  = 'vehicleHistory'; 
+    const UNIQUE_IDENTIFIER = 'id'; 
 }
