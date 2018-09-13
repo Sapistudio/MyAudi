@@ -112,7 +112,7 @@ class Handler extends AbstractHttpClient
         if(!$position['findCarResponse'])
             return false;
         $carResponse    = $position['findCarResponse'];
-        $database       = FileBase::loadDatabase(DatabaseConfig::LOCATION_DATABASE);
+        $database       = FileBase::loadDatabase(DatabaseConfig::HISTORY_DATABASE);
         $lastEntry      = $database->getEntry($database->lastId());
         $parkingTime    = date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC));
         $locationEntry  = ['dateupdated'   => date("Y-m-d H:i")];
