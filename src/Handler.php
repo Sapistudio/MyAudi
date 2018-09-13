@@ -103,38 +103,6 @@ class Handler extends AbstractHttpClient
     }
     
     /**
-     * Handler::checkingStatus()
-     * 
-     * @return
-     */
-    public function checkingStatus(){
-        $position = $this->loadPosition();
-        if(!$position['findCarResponse'])
-            return false;
-        $carResponse    = $position['findCarResponse'];
-        $database       = FileBase::loadDatabase(DatabaseConfig::HISTORY_DATABASE);
-        $lastEntry      = $database->getEntry($database->lastId());
-        $parkingTime    = date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC));
-        $locationEntry  = ['dateupdated'   => date("Y-m-d H:i")];
-        $status         = VehicleStatus::initStatus($this->status());
-        if(isset($lastEntry->parkingtime) && $lastEntry->parkingtime == $parkingTime){
-            $locationEntry[DatabaseConfig::UNIQUE_IDENTIFIER] = $lastEntry->{DatabaseConfig::UNIQUE_IDENTIFIER};
-        }else{
-            if(isset($lastEntry->endinglat)){
-                $locationEntry['startinglat'] = $lastEntry->endinglat;
-                $locationEntry['startinglon'] = $lastEntry->endinglon;
-            }
-            $locationEntry['endinglat'] = self::coordinateConverter($carResponse->Position->carCoordinate->latitude);
-            $locationEntry['endinglon'] = self::coordinateConverter($carResponse->Position->carCoordinate->longitude);
-            $locationEntry['parkingtime'] = $parkingTime;
-            $locationEntry['fuelprocent'] = $status->getFieldData('0x030103000A');
-            $locationEntry['currentmilleage'] = $status->getFieldData('0x0101010002');
-            $locationEntry['remainingmilleage'] = $status->getFieldData('0x0301030005');
-        }
-        return $database->addEntry($locationEntry);
-    }
-    
-    /**
      * Handler::buildRequestUri()
      * 
      * @param mixed $baseUri
@@ -146,18 +114,6 @@ class Handler extends AbstractHttpClient
         $url        = (substr($path, 0, 4) === 'http') ? $path : self::CAR_URL.$path;
         $url        = str_replace(['{csid}','{vin}'],[$this->getPrimaryCsid(),$this->getPrimaryVin()],$url);
         return $url;
-    }
-    
-    
-    /**
-     * Handler::coordinateConverter()
-     * 
-     * @param mixed $coordinateNumber
-     * @return
-     */
-    public static function coordinateConverter($coordinateNumber = null){
-        $dot = strlen($coordinateNumber)-6;
-        return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
     }
                 
     /**
