@@ -20,7 +20,7 @@ class FileBase extends Database
                 $configFile = __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.db.php';
                 if(!file_exists($configFile))
                     return false;
-                $databaseConfig         = require __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.db.php';
+                $databaseConfig         = require $configFile;
                 self::create($databaseName, $databaseConfig);
             }catch(LazerException $e){
                 return false;
@@ -54,7 +54,7 @@ class FileBase extends Database
     {
         if(!$data)
             return false;
-        if(isset($data[DatabaseConfig::UNIQUE_IDENTIFIER]))
+        if(!isset($data[DatabaseConfig::UNIQUE_IDENTIFIER]))
             $this->clearQuery();
         foreach ($data as $name => $value){
             if (Validate::table($this->name)->field($name) && Validate::table($this->name)->type($name,$value))
