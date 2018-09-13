@@ -61,14 +61,20 @@ class Handler extends AbstractHttpClient
         $database       = FileBase::loadDatabase(DatabaseConfig::LOCATION_DATABASE);
         $lastEntry      = $database->getEntry($database->lastId());
         $parkingTime    = date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC));
-        if(!isset($lastEntry->parkingtime) || $lastEntry->parkingtime !== $parkingTime){
-            $database->addEntry([
-                'dateadded'     => date("Y-m-d H:i"), 
-                'positionlat'   => self::coordinateConverter($carResponse->Position->carCoordinate->latitude),
-                'positionlon'   => self::coordinateConverter($carResponse->Position->carCoordinate->longitude),
-                'parkingtime'   => date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC)),
-            ]);
+        $fields = ['0x030103000A','0x0301030005',''];
+        $locationEntry = [
+            'dateupdated'   => date("Y-m-d H:i"), 
+            'startinglat'   => self::coordinateConverter($lastEntry->endinglat),
+            'startinglon'   => self::coordinateConverter($lastEntry->endinglon),
+            'endinglat'     => self::coordinateConverter($carResponse->Position->carCoordinate->latitude),
+            'endinglon'     => self::coordinateConverter($carResponse->Position->carCoordinate->longitude),
+            'parkingtime'   => date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC)),
+        ];
+        if(isset($lastEntry->parkingtime) && $lastEntry->parkingtime == $parkingTime){
+            $locationEntry[DatabaseConfig::UNIQUE_IDENTIFIER] = $lastEntry->{DatabaseConfig::UNIQUE_IDENTIFIER};
         }
+        print_R($locationEntry);die();
+        $database->addEntry();
         return $carResponse;
     }
     
@@ -138,7 +144,9 @@ class Handler extends AbstractHttpClient
      * @param mixed $coordinateNumber
      * @return
      */
-    public static function coordinateConverter($coordinateNumber){
+    public static function coordinateConverter($coordinateNumber = null){
+        if(!$coordinateNumber)
+            return null;
         $dot = strlen($coordinateNumber)-6;
         return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
     }
