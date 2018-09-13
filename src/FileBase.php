@@ -20,7 +20,8 @@ class FileBase extends Database
                 $configFile = __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';
                 if(!file_exists($configFile))
                     return false;
-                $databaseConfig = require __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';  
+                $databaseConfig         = require __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.$databaseName.'.config.php';
+                $databaseConfig[DatabaseConfig::UNIQUE_IDENTIFIER]  = 'integer';
                 self::create($databaseName, $databaseConfig);
             }catch(LazerException $e){
                 return false;
@@ -50,8 +51,12 @@ class FileBase extends Database
      * @param mixed $data
      * @return void
      */
-    public function addEntry($data)
+    public function addEntry($data = [])
     {
+        if(!$data)
+            return false;
+        if(isset($data[DatabaseConfig::UNIQUE_IDENTIFIER]))
+            $this->clearQuery();
         foreach ($data as $name => $value){
             if (Validate::table($this->name)->field($name) && Validate::table($this->name)->type($name,$value))
                 $this->set->{$name} = utf8_encode($value);
@@ -72,7 +77,6 @@ class FileBase extends Database
         }catch(LazerException $e){
             $data = [];
         }
-        $this->clearQuery();
         return json_decode(json_encode($data));
     }
 }
