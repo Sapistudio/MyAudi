@@ -13,6 +13,7 @@ class Handler extends AbstractHttpClient
     
     protected $responseFormat = 'json';
     protected static $username;
+    protected static $googleApiKey;
     protected static $password;
     private $authToken;
     private static $instance;
@@ -134,7 +135,6 @@ class Handler extends AbstractHttpClient
      * @return
      */
     public function __construct($credentials){
-        FileBase::setDatabasePath();
         parent::__construct();
         $this->setOption('http_errors',false);
         $this->setHeaders([
@@ -183,8 +183,9 @@ class Handler extends AbstractHttpClient
     {
         self::$username = !empty($credentials['username'])  ? $credentials['username']  : $check = true;
         self::$password = !empty($credentials['password'])  ? $credentials['password']  : $check = true;
+        self::$googleApiKey = !empty($credentials['googleApiKey'])  ? $credentials['googleApiKey']  : $check = true;
         if ($check){
-            throw new \Exception('Require in array [username], [password]');
+            throw new \Exception('Require in array [username], [password], [googleApiKey]');
         }
         self::$cacheHash = md5(realpath(dirname(__FILE__)).self::$username.self::$password);
         $this->addHeader('Authorization','AudiAuth 1 '.$this->login());
@@ -229,5 +230,14 @@ class Handler extends AbstractHttpClient
      */
     public function getPrimaryCsid(){
         return $this->primaryCsid;
+    }
+    
+    /**
+     * Handler::getCredential()
+     * 
+     * @return
+     */
+    public function getCredential($credentialName = null){
+        return (!self::$$credentialName) ? false : self::$$credentialName;
     }
 }

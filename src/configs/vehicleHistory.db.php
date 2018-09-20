@@ -1,8 +1,8 @@
 <?php
 return [
     'dateupdated'       => 'string', 
-    'endinglat'         => 'string',
-    'endinglon'         => 'string',
+    'endingLatLng'      => 'string',
+    'startingLatLng'    => 'string',
     'startinglat'       => 'string',
     'startinglon'       => 'string',
     'fuelprocent'       => 'string',

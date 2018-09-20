@@ -53,7 +53,15 @@ class VehicleStatus
     protected function parseResponse(){
         foreach((new Collection(array_map(function($element){return $element->field;},$this->responseData)))->flatten()->toArray() as $index => $responseEntry){
             $fieldName = (isset($this->responseFieldsNames[$responseEntry->id])) ? $this->responseFieldsNames[$responseEntry->id] : $responseEntry->textId;
-            $this->parsedResponse[$responseEntry->id] = ['name' => $fieldName,'unit' => $responseEntry->unit,'value' => $responseEntry->value,'measure_time' => $responseEntry->tsCarCaptured,'send_time' => $responseEntry->tsCarSent,'measure_mileage' => $responseEntry->milCarCaptured,'send_mileage' => $responseEntry->milCarSent];
+            $this->parsedResponse[$responseEntry->id] = [
+                'name'              => $fieldName,
+                'unit'              => $responseEntry->unit,
+                'value'             => $responseEntry->value,
+                'measure_time'      => $responseEntry->tsCarCaptured,
+                'send_time'         => $responseEntry->tsCarSent,
+                'measure_mileage'   => $responseEntry->milCarCaptured,
+                'send_mileage'      => $responseEntry->milCarSent
+            ];
         }
     }
     
