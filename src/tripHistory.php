@@ -53,7 +53,6 @@ class tripHistory
         $database       = self::getDb();
         $lastEntry      = $database->findAll()->last();
         
-        
         $parkingTime    = date("Y-m-d H:i", strtotime($carResponse->parkingTimeUTC));
         $locationEntry  = ['dateupdated'   => date("Y-m-d H:i")];
         $locationEntry['parkingelapsed'] = date_diff(date_create($parkingTime), date_create($locationEntry['dateupdated']))->format('%H:%I hrs');
@@ -62,7 +61,7 @@ class tripHistory
             $locationEntry[DatabaseConfig::UNIQUE_IDENTIFIER] = $lastEntry->{DatabaseConfig::UNIQUE_IDENTIFIER};
         }else{
             $locationEntry['endingLatLng']      = self::coordinateConverter($carResponse->Position->carCoordinate->latitude).','.self::coordinateConverter($carResponse->Position->carCoordinate->longitude);
-            $locationEntry['startingLatLng']    = (isset($lastEntry->endinglat)) ? $lastEntry->endinglat.','.$lastEntry->endinglon : $locationEntry['endingLatLng'];
+            $locationEntry['startingLatLng']    = (isset($lastEntry->endingLatLng)) ? $lastEntry->endingLatLng.','.$lastEntry->endinglon : $locationEntry['endingLatLng'];
             $locationEntry['parkingtime']       = $parkingTime;
             $locationEntry['fuelprocent']       = $status->getFieldData('0x030103000A');
             $locationEntry['currentmilleage']   = $status->getFieldData('0x0101010002');
