@@ -6,7 +6,8 @@
         "php": ">=5.6",
         "sapistudio/filedatabase": "^1.0",
         "illuminate/support": "5.4.*",
-        "sapistudio/restapi": "^1.0"
+        "sapistudio/restapi": "^1.0",
+        "sapistudio/sapimaps": "^1.0"
     },
     "autoload": {
          "psr-4": { "SapiStudio\\AudiMMI\\": "src/" }
