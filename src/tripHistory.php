@@ -74,7 +74,7 @@ class tripHistory
             $locationEntry['startingAddress']   = $map->getStartAddress();
             $locationEntry['endingAddress']     = $map->getEndAddress();
             $locationEntry['staticMap']         = $map->getStaticMap();
-            $locationEntry['hasRefuel']         = ($lastEntry && ($lastEntry['fuelprocent'] < $locationEntry['fuelprocent'])) ? 1 : 0;
+            $locationEntry['hasRefuel']         = ($lastEntry && ($lastEntry->fuelprocent < $locationEntry['fuelprocent'])) ? 1 : 0;
             /** pit stop to gas station*/
             if($locationEntry['hasRefuel'] == 1){
                 try {
