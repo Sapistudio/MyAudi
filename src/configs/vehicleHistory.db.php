@@ -1,12 +1,16 @@
 <?php
 return [
-    'dateupdated'       => 'string', 
-    'endingLatLng'      => 'string',
-    'startingLatLng'    => 'string',
-    'startinglat'       => 'string',
-    'startinglon'       => 'string',
-    'fuelprocent'       => 'string',
+    'tripmilleage'      => 'string',
     'currentmilleage'   => 'string',
     'remainingmilleage' => 'string',
-    'parkingtime'       => 'string'
+    'endingLatLng'      => 'string',
+    'startingLatLng'    => 'string',
+    'startingAddress'   => 'string',
+    'endingAddress'     => 'string',
+    'staticMap'         => 'string',
+    'parkingelapsed'    => 'string',
+    'parkingtime'       => 'string',
+    'fuelprocent'       => 'string',
+    'hasRefuel'         => 'string',
+    'dateupdated'       => 'string'
 ];

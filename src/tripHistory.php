@@ -48,7 +48,6 @@ class tripHistory
         $position = $this->handler->loadPosition();
         if(!$position['findCarResponse'])
             return false;
-        
         $carResponse    = $position['findCarResponse'];
         $database       = self::getDb();
         $lastEntry      = $database->findAll()->last();
@@ -67,20 +66,18 @@ class tripHistory
             $locationEntry['currentmilleage']   = $status->getFieldData('0x0101010002');
             $locationEntry['remainingmilleage'] = $status->getFieldData('0x0301030005');
             $locationEntry['tripmilleage']      = (isset($lastEntry->currentmilleage)) ? ($locationEntry['currentmilleage'] - $lastEntry->currentmilleage) : ($locationEntry['currentmilleage'] - $locationEntry['currentmilleage']);
-
-            $map = MapsHandler::load('directions')->setApiKey($this->handler->getCredential('googleApiKey'))->setParam(['origin'=>$locationEntry['startingLatLng'],'destination'=>$locationEntry['endingLatLng']])->query();
-            
-            $locationEntry['startingAddress']   = $map->getStartAddress();
-            $locationEntry['endingAddress']     = $map->getEndAddress();
-            $locationEntry['staticMap']         = $map->getStaticMap();
-            $locationEntry['hasRefuel']         = ($lastEntry && ($lastEntry->fuelprocent < $locationEntry['fuelprocent'])) ? 1 : 0;
-            /** pit stop to gas station*/
-            if($locationEntry['hasRefuel'] == 1){
-                try {
+            try {
+                $map = MapsHandler::load('directions')->setApiKey($this->handler->getCredential('googleApiKey'))->setParam(['origin'=>$locationEntry['startingLatLng'],'destination'=>$locationEntry['endingLatLng']])->query();
+                $locationEntry['startingAddress']   = $map->getStartAddress();
+                $locationEntry['endingAddress']     = $map->getEndAddress();
+                $locationEntry['staticMap']         = $map->getStaticMap();
+                $locationEntry['hasRefuel']         = ($lastEntry && ($lastEntry->fuelprocent < $locationEntry['fuelprocent'])) ? 1 : 0;
+                /** pit stop to gas station*/
+                if($locationEntry['hasRefuel'] == 1){
                     $locationEntry['refuelData'] = MapsHandler::load('nearbysearch')->setApiKey($this->handler->getCredential('googleApiKey'))->setParam(['location'=>$locationEntry['endingLatLng'],'type'=>'gas_station','radius'=>50])->query()->getFirst();
-                }catch (\Exception $e) {
-                    
                 }
+            }catch (\Exception $e) {
+                
             }
         }
         return $database->addEntry($locationEntry);
