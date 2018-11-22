@@ -1,0 +1,1 @@
+{"schema":{"id":"integer","dateupdated":"string","parkingelapsed":"string","endinglatlng":"string","startinglatlng":"string","parkingtime":"string","fuelprocent":"string","currentmilleage":"string","remainingmilleage":"string","tripmilleage":"string","startingaddress":"string","endingaddress":"string","staticmap":"string","hasrefuel":"string"},"last_id":214}

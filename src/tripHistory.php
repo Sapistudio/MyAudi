@@ -21,12 +21,7 @@ class tripHistory
      * @return
      */
     public static function getDb(){
-        $configFile = __dir__.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.DatabaseConfig::HISTORY_DATABASE.'.db.php';
-        if(!file_exists($configFile))
-            return false;
-        $databaseConfig         = require $configFile;
-        $configOptions = ['dir' => realpath(__DIR__).DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR,'fields' => $databaseConfig];
-        return Database::load(DatabaseConfig::HISTORY_DATABASE,$configOptions);
+        return Database::load(DatabaseConfig::HISTORY_DATABASE,['dir' => realpath(__DIR__).DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR,'fields' => []]);
     }
     
     /**
