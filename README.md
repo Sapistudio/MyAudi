@@ -42,10 +42,12 @@ $myAudiHandler->getFavoritePartner();
 
 For auto tracking of journeys:
 get your here api:https://developer.here.com/
+
 change src/configs/myaudi.php 
     modify HERE_API_KEY with your key
+   
 Setup a cron at minimum 5 minutes and run(this is the period that requests are cached.below this you are runing same request )
 ```php
 $myAudiHandler->trackLocation();
 ```
-when it see a change in your position,automitcally will add a journey entry to MyAudi,and a here static map with the route
+when it sees a change in your position,automitcally will add a journey entry to MyAudi,and a here static map with the route
