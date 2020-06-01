@@ -22,7 +22,11 @@ class Init extends ApiConnect
     
     /** Init::getPosition() */
     public function getPosition(){
-        return $this->setAuthorizationVwBearerHeader()->cachedGetRequest(self::$cacheHashes['POSITION'],ApiServices::getUrl('position'))[ApiServices::getElement('position')];
+        try{
+            return $this->setAuthorizationVwBearerHeader()->cachedGetRequest(self::$cacheHashes['POSITION'],ApiServices::getUrl('position'))[ApiServices::getElement('position')];
+        }catch(\Exception $positionException){
+            return false;
+        }
     }
     
     /** Init::getAppointments()*/
@@ -124,13 +128,14 @@ class Init extends ApiConnect
             /** update current position*/
             Config::setter(['CAR_POSITION' => $currentPosition]);
         }
+        return $this;
     }
     
     /** Init::saveEntries()*/
     protected function saveEntries($entryType = null,$attributes = [])
     {
-        $entry[Services\TrackEntries::$costType][ApiServices::getElement('trackEntries')][]     = ['type'          => Services\TrackEntries::$costType];
-        $entry[Services\TrackEntries::$driveType][ApiServices::getElement('trackEntries')][]    = ['type' => Services\TrackEntries::$driveType];
+        $entry[Services\TrackEntries::$costType][ApiServices::getElement('trackEntries')][]     = ['type'   => Services\TrackEntries::$costType];
+        $entry[Services\TrackEntries::$driveType][ApiServices::getElement('trackEntries')][]    = ['type'   => Services\TrackEntries::$driveType];
         /**
         [['name'  => 'csid','stringValue' => self::$vehiclesData->getPrimaryCsid()],
                     ['name'  => 'date','dateValue' => '2020-06-01T00:17:21+03:00'],
