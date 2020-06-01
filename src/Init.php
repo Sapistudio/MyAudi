@@ -123,6 +123,7 @@ class Init extends ApiConnect
                     ['name'  => 'remark','stringValue'          => $imageRoute]
                 ];
                 $this->saveEntries(Services\TrackEntries::$driveType,$updateEntry);
+                Config::setter(['CAR_TRACKING_ADDED' => strtotime("now")]);
             }
             Config::unsetter('CAR_IN_MOVEMENT');
             /** update current position*/
