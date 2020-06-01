@@ -76,6 +76,9 @@ class Init extends ApiConnect
     
     /** Init::trackLocation()*/
     public function trackLocation(){
+        /** if we dont have a here api in place,we cant reverse geocode the adress,so we skip it*/
+        if(!Config::HERE_API_KEY())
+            return false;
         $carFinder = $this->getPosition();
         /** no response , probably in movement*/
         if(!$carFinder){
