@@ -1,16 +1,17 @@
-# AudiMMI
-
-This library provides access to the Audi Connect API.
-
-
+# MyAudi rest api
+Inspired by https://github.com/davidgiga1993/AudiAPI
+This library provides access to the MyAudi api.
 
 ```php
-use SapiStudio\AudiMMI\Handler;
+use SapiStudio\MyAudi\Init;
 
 $configure = [
     'username' => 'user',
     'password' => 'pass'
 ];
-(new SapiStudio\AudiMMI\tripHistory(Handler::configure($configure)))->checkingStatus();
-Handler::configure($configure)->loadPosition();
+$myAudiHandler = Init::configure(['username' => 'user','password' => 'pass']);
+```
+Get car reported position
+```php
+$myAudiHandler->loadPosition();
 ```
