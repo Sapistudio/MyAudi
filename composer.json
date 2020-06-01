@@ -1,5 +1,5 @@
 {
-    "name": "sapistudio/audimmi",
+    "name": "sapistudio/myaudi",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -10,6 +10,6 @@
         "sapistudio/sapimaps": "^2.0"
     },
     "autoload": {
-         "psr-4": { "SapiStudio\\AudiMMI\\": "src/" }
+         "psr-4": { "SapiStudio\\MyAudi\\": "src/" }
     }
 }
