@@ -142,7 +142,7 @@ class ApiConnect extends AbstractHttpClient
     
     /** ApiConnect::refreshTokens() */
     private function refreshTokens(){
-        if(!Config::TOKENS() || !Config::MAIN_VIN())
+        if(!Config::TOKENS() || (Config::TOKENS()['REFRESH_TIMESTAMP'] && !Config::MAIN_VIN()))
             throw new \Exception('Can not refresh tokens. No tokens or vin found');
         $this->deleteCachedRequests();
         $tokens['AUDI'] = $this->cachedPostRequest(self::$cacheHashes['TOKEN_AUDI'],Config::ENDPOINTS()['AUDI_TOKEN'],[
