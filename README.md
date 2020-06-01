@@ -19,3 +19,23 @@ Get the car service plan
 ```php
 $myAudiHandler->getServicePlan();
 ```
+Get cost tracker entries
+```php
+$myAudiHandler->loadCostEntries();
+```
+Get journal entries
+```php
+$myAudiHandler->loadDriversEntries();
+```
+Check auxiliar clima status
+```php
+$myAudiHandler->auxiliarClimaStatus();
+```
+Get favourite audi partner
+```php
+$myAudiHandler->getFavoritePartner();
+```
+Get favourite audi partner
+```php
+$myAudiHandler->getFavoritePartner();
+```
