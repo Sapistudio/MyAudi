@@ -1,7 +1,6 @@
 <?php 
 return [
     'AUTHORIZATION' => [
-        'AUDIAUTH_HEADER' => 'AudiAuth 1 ',
         'BEARER_HEADER' => 'Bearer ',
     ],
     'SCOPES' => [
@@ -15,7 +14,7 @@ return [
         'AUDI_TOKEN' => 'https://id.audi.com/v1/token',
         'VW_TOKEN' => 'https://mbboauth-1d.prd.ece.vwg-connect.com/mbbcoauth/mobile/oauth2/v1/token',
     ],
-    'HERE_API_KEY' => 'KxUdLDQWhYwi316RkBP8-OHh5j4MHPCsId4zfYHCpzw',
+    'HERE_API_KEY' => '',
     'TOKENS_REFRESH_PERIOD' => 600,
     'X_APP_ID' => 'de.myaudi.mobile.assistant',
     'X_APP_NAME' => 'myAudi',
