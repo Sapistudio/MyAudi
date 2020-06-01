@@ -89,8 +89,8 @@ class ApiConnect extends AbstractHttpClient
                 "client_name"   => Config::CLIENT_NAME(),
                 "platform"      => Config::CLIENT_PLATFORM()
             ];
-            $registerApp        = $this->postJson(Config::REGISTER_APP(),$request);
-            Config::setter(['X_CLIENT_ID' => $registerApp->client_id]);
+            $registerApp        = $this->postJson(Config::ENDPOINTS()['REGISTER_APP'],$request);
+            Config::setter(['X_CLIENT_ID' => $registerApp['client_id']]);
         }
         $this->requestTokens();
         $this->setHeaders(
