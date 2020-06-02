@@ -11,14 +11,35 @@ class ApiConnect extends AbstractHttpClient
     private $blockLatRequestCall    = false;
     protected static $cacheHashes   = [];
     protected static $mapsHandler   = null;
-    private static                  $username;
-    private static                  $password;
+    private static                  $credentials;
     private static                  $vehiclesData;
     private static                  $userInfo;
     protected static                $apiInstance;
                 
     /** ApiConnect::configure() */
-    public static function configure($options = [])
+    public static function configure($credentials = [])
+    {
+        /** check credentials*/
+        if(empty($credentials['username']) || empty($credentials['password']))
+            throw new \Exception('Require in array [username], [password]');
+        self::$credentials = $credentials;
+        return self::make()->isAppConfigured();
+    }
+    
+    /** ApiConnect::logout() TODO*/
+    public static function logout()
+    {
+        return;
+        /** check credentials*/
+        self::$username = !empty($credentials['username'])  ? $credentials['username']  : $check = true;
+        self::$password = !empty($credentials['password'])  ? $credentials['password']  : $check = true;
+        if ($check)
+            throw new \Exception('Require in array [username], [password]');
+        return self::make();
+    }
+    
+    /** ApiConnect::make() */
+    public static function make()
     {
         if (null === static::$apiInstance)
             static::$apiInstance = new static($options);
@@ -52,19 +73,16 @@ class ApiConnect extends AbstractHttpClient
     |--------------------------------------------------------------------------
     */
     /** ApiConnect::__construct()*/
-    public function __construct($credentials){
+    public function __construct(){
         parent::__construct();
         /** LOAD CONFIG*/
         Config::initiate();
         self::$mapsHandler = \Sapistudio\SapiMaps\Handler::Here(Config::HERE_API_KEY());
-        /** check credentials*/
-        self::$username = !empty($credentials['username'])  ? $credentials['username']  : $check = true;
-        self::$password = !empty($credentials['password'])  ? $credentials['password']  : $check = true;
-        if ($check)
-            throw new \Exception('Require in array [username], [password]');
         /** build hashes for cached requests*/
-        $cacheHash          = md5(realpath(dirname(__FILE__)).self::$username.self::$password);
-        self::$cacheHashes  = ['TOKEN_AUDI' => $cacheHash.'aTokens','TOKEN_VW' => $cacheHash.'vwTokens','REFRESH' => 'refreshTokens','VEHICLE' => $cacheHash.'vehiclesList','USER' => $cacheHash.'userInfo','POSITION' => $cacheHash.'carFinder','CARSTATUS' => $cacheHash.'carStatus'];
+        if($this->isAppConfigured()){
+            $cacheHash          = md5(realpath(dirname(__FILE__)).Config::X_CLIENT_ID());
+            self::$cacheHashes  = ['TOKEN_AUDI' => $cacheHash.'aTokens','TOKEN_VW' => $cacheHash.'vwTokens','REFRESH' => 'refreshTokens','VEHICLE' => $cacheHash.'vehiclesList','USER' => $cacheHash.'userInfo','POSITION' => $cacheHash.'carFinder','CARSTATUS' => $cacheHash.'carStatus'];
+        }
         /** set defaults http client options*/
         $this->setOption('http_errors',false)->setOption('verify',false)->setHeaders(
             [
@@ -75,24 +93,22 @@ class ApiConnect extends AbstractHttpClient
             ]
         )->initCacheRequests();
         /** register and init the api. if all is fine , after this you can make audi api calls :)*/
-        $this->registerApp();
+        $this->initAudiApp();
     }
     
-    /** ApiConnect::registerApp() */
-    private function registerApp(){
-        if(!Config::X_CLIENT_ID()){
-            $request = [
-                "appId"         => Config::X_APP_ID(),
-                "appName"       => Config::X_APP_NAME(),
-                "appVersion"    => Config::X_APP_VERSION(),
-                "client_brand"  => Config::X_APP_BRAND(),
-                "client_name"   => Config::CLIENT_NAME(),
-                "platform"      => Config::CLIENT_PLATFORM()
-            ];
-            $registerApp        = $this->postJson(Config::ENDPOINTS()['REGISTER_APP'],$request);
-            Config::setter(['X_CLIENT_ID' => $registerApp['client_id']]);
-        }
-        $this->requestTokens();
+    /** ApiConnect::isAppConfigured() */
+    private function isAppConfigured(){
+        return (!Config::X_CLIENT_ID() || !Config::TOKENS()) ? false : true;
+    }
+    
+    /** ApiConnect::initAudiApp() */
+    private function initAudiApp(){
+        if(self::$credentials['username'] && self::$credentials['password'])
+            return $this->registerApp();
+        if(!$this->isAppConfigured())
+            throw new \Exception('Cant start app...not configured properly');
+        if(!Config::TOKENS()['REFRESH_TIMESTAMP'] || Config::TOKENS()['NEXT_REFRESH'] <= strtotime("now"))
+            $this->refreshTokens();
         $this->setHeaders(
             [
                 'X-App-ID'      => Config::X_APP_ID(),
@@ -111,9 +127,23 @@ class ApiConnect extends AbstractHttpClient
         return $this;
     }
     
-    /** ApiConnect::requestTokens() */
-    private function requestTokens()
+    /** ApiConnect::registerApp() */
+    private function registerApp()
     {
+        if($this->isAppConfigured())
+            throw new \Exception('App is already configured..please logout first');
+        if(!Config::X_CLIENT_ID()){
+            $request = [
+                "appId"         => Config::X_APP_ID(),
+                "appName"       => Config::X_APP_NAME(),
+                "appVersion"    => Config::X_APP_VERSION(),
+                "client_brand"  => Config::X_APP_BRAND(),
+                "client_name"   => Config::CLIENT_NAME(),
+                "platform"      => Config::CLIENT_PLATFORM()
+            ];
+            $registerApp        = $this->postJson(Config::ENDPOINTS()['REGISTER_APP'],$request);
+            Config::setter(['X_CLIENT_ID' => $registerApp['client_id']]);
+        }        
         if(!Config::TOKENS()){
             $this->deleteCachedRequests();
             $tokens['AUDI'] = $this->cachedPostRequest(self::$cacheHashes['TOKEN_AUDI'],Config::ENDPOINTS()['AUDI_TOKEN'],[
@@ -121,10 +151,12 @@ class ApiConnect extends AbstractHttpClient
                     'client_id'     => Config::CLIENT_ID(),
                     'scope'         => Config::SCOPES()['AUDI'],
                     'grant_type'    => 'password',
-                    'username'      => self::$username,
-                    'password'      => self::$password
+                    'username'      => self::$credentials['username'],
+                    'password'      => self::$credentials['password']
                 ]
             ]);
+            /** clear credentials*/
+            unset(self::$credentials['username'],self::$credentials['password']);
             $tokens['VW'] = $this->cachedPostRequest(self::$cacheHashes['TOKEN_VW'],Config::ENDPOINTS()['VW_TOKEN'], [
                 'headers'       => ["X-Client-Id" => Config::X_CLIENT_ID()],
                 'form_params'   => [
@@ -133,10 +165,15 @@ class ApiConnect extends AbstractHttpClient
                     'token'         => $tokens['AUDI']['id_token']
                 ]
             ]);
+            /** append all any other configs bypassed*/
+            if(self::$credentials){
+                foreach(self::$credentials as $configName => $configValue)
+                    Config::setter([$configName => $configValue]);
+            }
             Config::setter(['TOKENS' => $tokens]);
         }
-        if(!Config::TOKENS()['REFRESH_TIMESTAMP'] || Config::TOKENS()['NEXT_REFRESH'] <= strtotime("now"))
-            $this->refreshTokens();
+        /** fallback for any other error from now,we keep all the configuration*/
+        Config::saveConfigs();
         return $this;
     }
     
@@ -159,7 +196,7 @@ class ApiConnect extends AbstractHttpClient
         ]);
         $tokens['VW']                   = array_merge(Config::TOKENS()['VW'],$tokens['VW']);
         $tokens['REFRESH_TIMESTAMP']    = strtotime("now");
-        $tokens['NEXT_REFRESH']         = strtotime("now")+Config::TOKENS_REFRESH_PERIOD();
+        $tokens['NEXT_REFRESH']         = strtotime("now") + Config::TOKENS_REFRESH_PERIOD();
         Config::setter(['TOKENS' => $tokens]);
         return $this;
     }
