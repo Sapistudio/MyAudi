@@ -2,15 +2,26 @@
 Inspired by https://github.com/davidgiga1993/AudiAPI
 This library provides access to the MyAudi api.
 
+First we must configure the app.credentials are not stored anywhere,just used for receiving tokens.
+This is just one times use command.It will fall , unless a proper logout is made
 ```php
 use SapiStudio\MyAudi\Init;
 
 $configure = [
     'username' => 'user',
     'password' => 'pass'
+    'HERE_API_KEY'=>'apivalue'
 ];
-$myAudiHandler = Init::configure(['username' => 'user','password' => 'pass']);
+$myAudiHandler = Init::configure($configure);
 ```
+Now we can make api calls
+Initiate the app
+```php
+use SapiStudio\MyAudi\Init;
+
+$myAudiHandler = Init::make();
+```
+
 Get car reported position
 ```php
 $myAudiHandler->getPosition();
