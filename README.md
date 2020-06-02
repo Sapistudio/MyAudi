@@ -1,4 +1,5 @@
 # MyAudi rest api
+# stil in tests
 Inspired by https://github.com/davidgiga1993/AudiAPI
 This library provides access to the MyAudi api.
 
