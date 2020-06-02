@@ -4,6 +4,7 @@ This library provides access to the MyAudi api.
 
 First we must configure the app.credentials are not stored anywhere,just used for receiving tokens.
 This is just one times use command.It will fall , unless a proper logout is made.
+
 For auto tracking of journeys you will need an here api key
 get your here api:https://developer.here.com/
 
