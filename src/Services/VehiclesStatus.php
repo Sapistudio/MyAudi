@@ -39,8 +39,7 @@ class VehiclesStatus
         $vehicleStatus = json_decode(json_encode($vehicleStatus));
         if(!isset($vehicleStatus->vehicleData->data))
             return false;
-        $this->responseFieldsNames  = require dirname(__DIR__).DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.'fieldsResponse.config.php';
-
+        $this->responseFieldsNames  = Config::fieldsResponse();
         foreach((new Collection(array_map(function($element){return $element->field;},$vehicleStatus->vehicleData->data)))->flatten()->toArray() as $index => $responseEntry){
             $fieldName = (isset($this->responseFieldsNames[$responseEntry->id])) ? $this->responseFieldsNames[$responseEntry->id] : $responseEntry->textId;
             $indexName = (isset($this->responseFieldsNames[$responseEntry->id])) ? $this->responseFieldsNames[$responseEntry->id] : $responseEntry->id;
