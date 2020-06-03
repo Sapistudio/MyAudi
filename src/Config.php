@@ -43,6 +43,8 @@ class Config
                     self::$instance->set(require $file->getRealPath());
             }
         }
+        if(!is_file(self::$configStoragePath))
+            throw new \Exception('Can not find main config file');
         return $files;
     }
     
