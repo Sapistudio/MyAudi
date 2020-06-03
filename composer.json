@@ -4,7 +4,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.6",
-        "illuminate/support": "5.4.*",
+        "sapistudio/filesystem": "^2.0",
         "sapistudio/restapi": "^3.0",
         "sapistudio/sapimaps": "^3.0"
     },
