@@ -8,6 +8,12 @@
         "sapistudio/restapi": "^3.0",
         "sapistudio/sapimaps": "^3.0"
     },
+    "scripts": {
+		"post-install-cmd": [
+			"php -r \"chmod( __DIR__ . '/src/cache', 0777);\"",
+			"php -r \"chmod( __DIR__ . '/src/configs', 0777);\""
+		]
+	},
     "autoload": {
          "psr-4": { "SapiStudio\\MyAudi\\": "src/" }
     }
