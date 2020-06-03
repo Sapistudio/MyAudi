@@ -53,5 +53,4 @@ return [
         'url' => 'fs-car/bs/dwap/v1/{brandType}/{country}/vehicles/{vin}/history',
         'element' => 'dwaPushHistory',
     ],
-]
-;
+];
