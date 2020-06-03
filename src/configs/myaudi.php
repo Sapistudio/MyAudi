@@ -11,10 +11,11 @@ return [
     'ENDPOINTS' => [
         'AUDI_API' => 'https://msg.audi.de',
         'REGISTER_APP' => 'https://mbboauth-1d.prd.ece.vwg-connect.com/mbbcoauth/mobile/register/v1',
+        'AUDI_REVOKE' => 'https://id.audi.com/v1/revoke',
         'AUDI_TOKEN' => 'https://id.audi.com/v1/token',
         'VW_TOKEN' => 'https://mbboauth-1d.prd.ece.vwg-connect.com/mbbcoauth/mobile/oauth2/v1/token',
+        'VW_REVOKE' => 'https://mbboauth-1d.prd.ece.vwg-connect.com/mbbcoauth/mobile/oauth2/v1/revoke',
     ],
-    'HERE_API_KEY' => '',
     'TOKENS_REFRESH_PERIOD' => 600,
     'X_APP_ID' => 'de.myaudi.mobile.assistant',
     'X_APP_NAME' => 'myAudi',
@@ -27,5 +28,4 @@ return [
     'CLIENT_ID' => 'mmiconnect_android',
     'CLIENT_NAME' => 'Android SDK built for x86_64',
     'CLIENT_PLATFORM' => 'google',
-]
-;
+];
