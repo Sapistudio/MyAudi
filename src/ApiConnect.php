@@ -11,11 +11,17 @@ class ApiConnect extends AbstractHttpClient
     private $blockLatRequestCall    = false;
     protected static $cacheHashes   = [];
     protected static $mapsHandler   = null;
+    private static $revokeTokens    = false;
     private static                  $credentials;
     private static                  $vehiclesData;
     private static                  $userInfo;
     protected static                $apiInstance;
-                
+    
+    /**
+    |--------------------------------------------------------------------------
+    | Initiators
+    |--------------------------------------------------------------------------
+    */       
     /** ApiConnect::configure() */
     public static function configure($credentials = [])
     {
@@ -26,15 +32,10 @@ class ApiConnect extends AbstractHttpClient
         return self::make()->isAppConfigured();
     }
     
-    /** ApiConnect::logout() TODO*/
+    /** ApiConnect::logout() */
     public static function logout()
     {
-        return;
-        /** check credentials*/
-        self::$username = !empty($credentials['username'])  ? $credentials['username']  : $check = true;
-        self::$password = !empty($credentials['password'])  ? $credentials['password']  : $check = true;
-        if ($check)
-            throw new \Exception('Require in array [username], [password]');
+        self::$revokeTokens = true;
         return self::make();
     }
     
@@ -66,7 +67,7 @@ class ApiConnect extends AbstractHttpClient
         $dot = strlen($coordinateNumber)-6;
         return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
     }
-        
+
     /**
     |--------------------------------------------------------------------------
     | APP INITIATOR AND TOKENS GENERATOR
@@ -81,7 +82,15 @@ class ApiConnect extends AbstractHttpClient
         /** build hashes for cached requests*/
         if($this->isAppConfigured()){
             $cacheHash          = md5(realpath(dirname(__FILE__)).Config::X_CLIENT_ID());
-            self::$cacheHashes  = ['TOKEN_AUDI' => $cacheHash.'aTokens','TOKEN_VW' => $cacheHash.'vwTokens','REFRESH' => 'refreshTokens','VEHICLE' => $cacheHash.'vehiclesList','USER' => $cacheHash.'userInfo','POSITION' => $cacheHash.'carFinder','CARSTATUS' => $cacheHash.'carStatus'];
+            self::$cacheHashes  = [
+                'TOKEN_AUDI'    => $cacheHash.'aTokens',
+                'TOKEN_VW'      => $cacheHash.'vwTokens',
+                'REFRESH'       => $cacheHash.'refreshTokens',
+                'VEHICLE'       => $cacheHash.'vehiclesList',
+                'USER'          => $cacheHash.'userInfo',
+                'POSITION'      => $cacheHash.'carFinder',
+                'CARSTATUS'     => $cacheHash.'carStatus'
+            ];
         }
         /** set defaults http client options*/
         $this->setOption('http_errors',false)->setOption('verify',false)->setHeaders(
@@ -97,7 +106,7 @@ class ApiConnect extends AbstractHttpClient
     }
     
     /** ApiConnect::isAppConfigured() */
-    private function isAppConfigured(){
+    protected function isAppConfigured(){
         return (!Config::X_CLIENT_ID() || !Config::TOKENS()) ? false : true;
     }
     
@@ -107,6 +116,8 @@ class ApiConnect extends AbstractHttpClient
             return $this->registerApp();
         if(!$this->isAppConfigured())
             throw new \Exception('Cant start app...not configured properly');
+        if(self::$revokeTokens)
+            return $this->revokeTokens();
         if(!Config::TOKENS()['REFRESH_TIMESTAMP'] || Config::TOKENS()['NEXT_REFRESH'] <= strtotime("now"))
             $this->refreshTokens();
         $this->setHeaders(
@@ -200,6 +211,27 @@ class ApiConnect extends AbstractHttpClient
         Config::setter(['TOKENS' => $tokens]);
         return $this;
     }
+    
+    /** ApiConnect::revokeTokens() */
+    private function revokeTokens(){
+        if(!Config::TOKENS())
+            throw new \Exception('Can not revoke tokens. No tokens found');
+        $this->deleteCachedRequests();
+        $this->cachedPostRequest('revokeAudi',Config::ENDPOINTS()['AUDI_REVOKE'],[
+            'form_params'   => [
+                'client_id'         => Config::CLIENT_ID(),
+                'token_type_hint'   => Config::SCOPES()['R_TOKEN'],
+                'token'             => Config::TOKENS()['AUDI']['refresh_token']
+            ]
+        ]);
+         $this->cachedPostRequest('revokeVw',Config::ENDPOINTS()['VW_REVOKE'], [
+            'headers'       => ["X-Client-Id" => Config::X_CLIENT_ID()],
+            'form_params'   => ['token_type_hint' => Config::SCOPES()['R_TOKEN'],'token' => Config::TOKENS()['VW']['refresh_token']]
+        ]);
+        Config::unsetter(['TOKENS','MAIN_VIN','LAST_KNOWN_POSITION','CAR_TRACKING_ADDED']);
+        return $this;
+    }
+    
     /**
     |--------------------------------------------------------------------------
     | AUTHORIZATION headers
