@@ -4,12 +4,15 @@ use Illuminate\Config\Repository;
 
 class Config
 {
+    
     private static $instance            = null;
     private static $configStoragePath   = null;
     private static $mainConfigName      = 'myaudi';
     private static $mainConfigFolder    = null;
+    private static $mainCacheFolder     = null;
     private static $configExtension     = '.config.php';
     private static $configsPaths        = [];
+    private static $foldersPath         = ['cache','configs'];
     
     /** Config::__callStatic() */
     public static function __callStatic($name, $args) {
@@ -18,16 +21,36 @@ class Config
     
     /** Config::initiate() */
     public static function initiate($dirPath = null){
+        self::checkFolderPaths();
         if(is_null(self::$instance)){
-            static::$mainConfigFolder   = (!$dirPath) ? realpath(__DIR__).DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR : false;
-            self::$instance             = new Repository();
             register_shutdown_function([__NAMESPACE__.'\Config','saveConfigs']);
+            self::$instance             = new Repository();
             self::$configStoragePath    = static::$mainConfigFolder.static::$mainConfigName.static::$configExtension;
             self::loadConfigFiles();
         }
         return self::$instance;
     }
     
+    /** Config::checkFolderPaths() */
+    private function checkFolderPaths($workingDirectory = null){
+        $workingDirectory = (!$workingDirectory) ? sys_get_temp_dir().DIRECTORY_SEPARATOR.'myAudiCache' : $workingDirectory;
+        if (!is_dir($workingDirectory)) {
+            @mkdir($workingDirectory, 0777, true);
+            foreach(self::$foldersPath as $folder)
+                @mkdir($workingDirectory.DIRECTORY_SEPARATOR.$folder, 0777, true);
+            \SapiStudio\FileSystem\Handler::copyDirectory(realpath(__DIR__).DIRECTORY_SEPARATOR.'configs',$workingDirectory.DIRECTORY_SEPARATOR.'configs');
+        }
+        $workingDirectory           = (!$workingDirectory) ? realpath(__DIR__) : $workingDirectory;
+        static::$mainConfigFolder   = $workingDirectory.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR;
+        static::$mainCacheFolder    = $workingDirectory.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;
+    }
+    
+    /** Config::getCachePath() */
+    public static function getCachePath(){
+        return self::$mainCacheFolder;
+    }
+    
+    /** Config::loadConfigFiles() */
     private static function loadConfigFiles(){
         if(!is_dir(static::$mainConfigFolder))
             return false;
