@@ -46,7 +46,7 @@ class Init extends ApiConnect
     public function getFavoritePartner(){
         $partnerCode = $this->setAuthorizationAudiBearerHeader()->cachedGetRequest(ApiServices::getUrl('partnership'));
         if($partnerCode){
-            $partnerCode = $this->setAuthorizationAudiBearerHeader()->get(str_replace(array_keys($partnerCode),array_values($partnerCode),ApiServices::getDetailUrl('partnership')))[ApiServices::getElement('partnership')];
+            $partnerCode = $this->setAuthorizationAudiBearerHeader()->cachedGetRequest(str_replace(array_keys($partnerCode),array_values($partnerCode),ApiServices::getDetailUrl('partnership')))[ApiServices::getElement('partnership')];
         }
         return $partnerCode;
     }
@@ -72,13 +72,13 @@ class Init extends ApiConnect
     /** Init::loadCosts()*/
     public function loadCosts()
     {
-        return (new TkEntries($this->setAuthorizationAudiBearerHeader()->get(ApiServices::getUrl('trackEntries').'?type='.TkEntries::$costType)))->getEntries();
+        return (new TkEntries($this->setAuthorizationAudiBearerHeader()->cachedGetRequest(ApiServices::getUrl('trackEntries').'?type='.TkEntries::$costType)))->getEntries();
     }
     
     /** Init::loadJourneys()*/
     public function loadJourneys()
     {
-        return (new TkEntries($this->setAuthorizationAudiBearerHeader()->get(ApiServices::getUrl('trackEntries').'?type='.TkEntries::$driveType)))->getEntries();
+        return (new TkEntries($this->setAuthorizationAudiBearerHeader()->cachedGetRequest(ApiServices::getUrl('trackEntries').'?type='.TkEntries::$driveType)))->getEntries();
     }
     
     /** Init::trackLocation()*/
