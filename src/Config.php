@@ -32,7 +32,7 @@ class Config
     }
     
     /** Config::checkFolderPaths() */
-    private function checkFolderPaths($workingDirectory = null){
+    private static function checkFolderPaths($workingDirectory = null){
         $workingDirectory = (!$workingDirectory) ? sys_get_temp_dir().DIRECTORY_SEPARATOR.'myAudiCache' : $workingDirectory;
         if (!is_dir($workingDirectory)) {
             @mkdir($workingDirectory, 0777, true);
