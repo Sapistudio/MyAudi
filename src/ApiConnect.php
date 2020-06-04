@@ -256,7 +256,7 @@ class ApiConnect extends AbstractHttpClient
     */
     /** ApiConnect::initCacheRequests() */
     public function initCacheRequests(){
-        $this->cacheParams = ['cacheDir' => realpath(__DIR__).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR,'cacheVal' => 3600];
+        $this->cacheParams = ['cacheDir' => Config::getCachePath(),'cacheVal' => 3600];
         $this->getHttpClient()->setCacheParams($this->cacheParams);
         return $this;
     }
