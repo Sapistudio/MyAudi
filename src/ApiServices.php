@@ -4,6 +4,12 @@ namespace SapiStudio\MyAudi;
 class ApiServices
 {
     protected static $servicesTypes = [];
+    protected $apiHandler           = null;
+    
+    /** ApiServices::__construct()*/
+    public function __construct(\SapiStudio\MyAudi\Init $apiHandler){
+        $this->apiHandler = $apiHandler;
+    }
     
     /** ApiServices::__callStatic() */
     public static function __callStatic($serviceName, $args){
