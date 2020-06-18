@@ -67,7 +67,11 @@ class ApiConnect extends AbstractHttpClient
         $dot = strlen($coordinateNumber)-6;
         return substr($coordinateNumber,0,$dot).'.'.substr($coordinateNumber, $dot);
     }
-
+    
+    /** Init::getMapHandler()*/
+    public function getMapHandler(){
+        return self::$mapsHandler;
+    }
     /**
     |--------------------------------------------------------------------------
     | APP INITIATOR AND TOKENS GENERATOR
