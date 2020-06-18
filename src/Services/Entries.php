@@ -64,31 +64,31 @@ class Entries extends ApiServices
         $journeyId      = 'positionHistory.'.self::$driveType.'.'.self::getElement('trackEntries').'.'.$currentPosition[self::ENTRY_HASH_KEY];
         if(Config::getter($journeyId))
             return true;
-        $lastAddress    = self::$mapsHandler->revGeocode($lastPosition['coordinates']);
-        $currentAddress = self::$mapsHandler->revGeocode($currentPosition['coordinates']);
-        $imageRoute     = self::$mapsHandler->setParams(['poix0' => implode(',',$lastPosition['coordinates']).';5e5656;ffffff;13;'.$lastAddress->getAddresStreet().';','poix1' => implode(',',$currentPosition['coordinates']).';5e5656;ffffff;13;'.$currentAddress->getAddresStreet().';'])->mapRoute([$lastPosition['coordinates'],$currentPosition['coordinates']]);
+        $lastAddress    = $this->apiHandler->getMapHandler()->revGeocode($lastPosition['coordinates']);
+        $currentAddress = $this->apiHandler->getMapHandler()->revGeocode($currentPosition['coordinates']);
+        $imageRoute     = $this->apiHandler->getMapHandler()->setParams(['poix0' => implode(',',$lastPosition['coordinates']).';5e5656;ffffff;13;'.$lastAddress->getAddresStreet().';','poix1' => implode(',',$currentPosition['coordinates']).';5e5656;ffffff;13;'.$currentAddress->getAddresStreet().';'])->mapRoute([$lastPosition['coordinates'],$currentPosition['coordinates']]);
         $entry = [
             'type'          => self::$driveType,
             'attributes'    => [
                 'attribute' => [
-                    ['name'  => TkEntries::FIELD_CSID,          'stringValue'   => $this->apiHandler->getVehicle()->getCarCsid()],
-                    ['name'  => TkEntries::FIELD_TS_START,      'dateValue'     => date("Y-m-d\TH:i:sP",strtotime($lastPosition['updateTime']))],
-                    ['name'  => TkEntries::FIELD_TS_END,        'dateValue'     => date("Y-m-d\TH:i:sP",strtotime($currentPosition['updateTime']))],
-                    ['name'  => TkEntries::FIELD_KM_AT_START,   'doubleValue'   => $lastPosition['milleage']],
-                    ['name'  => TkEntries::FIELD_KM_AT_END,     'doubleValue'   => $currentPosition['milleage']],
-                    ['name'  => TkEntries::FIELD_TRIP,          'stringValue'   => TkEntries::FIELD_TRIP_VAL],
-                    ['name'  => TkEntries::FIELD_FROM_NAME,     'stringValue'   => $lastAddress->getAddresLabel()],
-                    ['name'  => TkEntries::FIELD_FROM_STREET,   'stringValue'   => $lastAddress->getAddresStreet()],
-                    ['name'  => TkEntries::FIELD_FROM_ZIP,      'stringValue'   => $lastAddress->getAddresZipCode()],
-                    ['name'  => TkEntries::FIELD_FROM_CITY,     'stringValue'   => $lastAddress->getAddresCity()],
-                    ['name'  => TkEntries::FIELD_FROM_COUNTRY,  'stringValue'   => $lastAddress->getAddresCountryName()],
-                    ['name'  => TkEntries::FIELD_TO_NAME,       'stringValue'   => $currentAddress->getAddresLabel()],
-                    ['name'  => TkEntries::FIELD_TO_STREET,     'stringValue'   => $currentAddress->getAddresStreet()],
-                    ['name'  => TkEntries::FIELD_TO_ZIP,        'stringValue'   => $currentAddress->getAddresZipCode()],
-                    ['name'  => TkEntries::FIELD_TO_CITY,       'stringValue'   => $currentAddress->getAddresCity()],
-                    ['name'  => TkEntries::FIELD_TO_COUNTRY,    'stringValue'   => $currentAddress->getAddresCountryName()],
-                    ['name'  => TkEntries::FIELD_PURPOSE,       'stringValue'   => $imageRoute],
-                    ['name'  => TkEntries::FIELD_REMARK,        'stringValue'   => $imageRoute]
+                    ['name'  => self::FIELD_CSID,          'stringValue'   => $this->apiHandler->getVehicle()->getCarCsid()],
+                    ['name'  => self::FIELD_TS_START,      'dateValue'     => date("Y-m-d\TH:i:sP",strtotime($lastPosition['updateTime']))],
+                    ['name'  => self::FIELD_TS_END,        'dateValue'     => date("Y-m-d\TH:i:sP",strtotime($currentPosition['updateTime']))],
+                    ['name'  => self::FIELD_KM_AT_START,   'doubleValue'   => $lastPosition['milleage']],
+                    ['name'  => self::FIELD_KM_AT_END,     'doubleValue'   => $currentPosition['milleage']],
+                    ['name'  => self::FIELD_TRIP,          'stringValue'   => self::FIELD_TRIP_VAL],
+                    ['name'  => self::FIELD_FROM_NAME,     'stringValue'   => $lastAddress->getAddresLabel()],
+                    ['name'  => self::FIELD_FROM_STREET,   'stringValue'   => $lastAddress->getAddresStreet()],
+                    ['name'  => self::FIELD_FROM_ZIP,      'stringValue'   => $lastAddress->getAddresZipCode()],
+                    ['name'  => self::FIELD_FROM_CITY,     'stringValue'   => $lastAddress->getAddresCity()],
+                    ['name'  => self::FIELD_FROM_COUNTRY,  'stringValue'   => $lastAddress->getAddresCountryName()],
+                    ['name'  => self::FIELD_TO_NAME,       'stringValue'   => $currentAddress->getAddresLabel()],
+                    ['name'  => self::FIELD_TO_STREET,     'stringValue'   => $currentAddress->getAddresStreet()],
+                    ['name'  => self::FIELD_TO_ZIP,        'stringValue'   => $currentAddress->getAddresZipCode()],
+                    ['name'  => self::FIELD_TO_CITY,       'stringValue'   => $currentAddress->getAddresCity()],
+                    ['name'  => self::FIELD_TO_COUNTRY,    'stringValue'   => $currentAddress->getAddresCountryName()],
+                    ['name'  => self::FIELD_PURPOSE,       'stringValue'   => $imageRoute],
+                    ['name'  => self::FIELD_REMARK,        'stringValue'   => $imageRoute]
                 ]
             ]
         ];
