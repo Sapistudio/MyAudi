@@ -82,7 +82,7 @@ class ApiConnect extends AbstractHttpClient
         parent::__construct();
         /** LOAD CONFIG*/
         Config::initiate();
-        self::$mapsHandler = \Sapistudio\SapiMaps\Handler::Here(Config::HERE_API_KEY());
+        self::$mapsHandler = \SapiStudio\SapiMaps\Handler::Here(Config::HERE_API_KEY());
         /** build hashes for cached requests*/
         if($this->isAppConfigured()){
             $cacheHash          = md5(realpath(dirname(__FILE__)).Config::X_CLIENT_ID());
