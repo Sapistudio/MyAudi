@@ -32,6 +32,8 @@ class Init extends ApiConnect
     
     /** Init::trackLocation() */
     public function trackLocation(){
+        if(!self::$mapsHandler)
+            return false;        
         $currentPosition = $this->getPosition();
         /** no response , probably in movement*/
         if(!$currentPosition)
