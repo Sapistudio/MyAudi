@@ -58,7 +58,7 @@ class Config
         $phpFiles   = \SapiStudio\FileSystem\Handler::getFinder()->files()->name('*'.self::$configExtension)->in(static::$mainConfigFolder)->depth(0);
         if($phpFiles){
             foreach($phpFiles as $file) {
-                $indexName          = (is_string($folderIndex)) ? $folderIndex.'.'.basename($file->getRealPath(),self::$configExtension) : basename($file->getRealPath(),self::$configExtension);
+                $indexName  = basename($file->getRealPath(),self::$configExtension);
                 if($indexName != static::$mainConfigName){
                     self::$configsPaths[$indexName] = $file->getRealPath();
                     self::$instance->set($indexName, require $file->getRealPath());
