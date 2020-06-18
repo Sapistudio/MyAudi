@@ -77,7 +77,8 @@ class Config
         $configVariables = self::$instance->all();
         foreach(self::$configsPaths as $configIndex => $configPath){
             if(isset($configVariables[$configIndex])){
-                \SapiStudio\FileSystem\Handler::dumpToConfig($configPath,array_filter($configVariables[$configIndex]));
+                $dumpText = (is_array($configVariables[$configIndex])) ? array_filter($configVariables[$configIndex]) : $configVariables[$configIndex];
+                \SapiStudio\FileSystem\Handler::dumpToConfig($configPath,$dumpText);
                 unset($configVariables[$configIndex]);
             }  
         }
@@ -88,8 +89,8 @@ class Config
     }
     
     /** Config::setter() */
-    public static function setter($key,$value){
-        self::$instance->offsetSet($key,$value);
+    public static function setter($setData = [){
+        self::$instance->offsetSet($setData);
     }
     
     /** Config::unsetter() */
