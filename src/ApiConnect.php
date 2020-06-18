@@ -43,7 +43,7 @@ class ApiConnect extends AbstractHttpClient
     public static function make()
     {
         if (null === static::$apiInstance)
-            static::$apiInstance = new static($options);
+            static::$apiInstance = new static();
         return static::$apiInstance;
     }
     
