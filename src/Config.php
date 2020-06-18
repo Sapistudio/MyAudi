@@ -89,8 +89,8 @@ class Config
     }
     
     /** Config::setter() */
-    public static function setter($setData = []){
-        self::$instance->offsetSet($setData);
+    public static function setter($key = null,$value = null){
+        self::$instance->offsetSet($key,$value);
     }
     
     /** Config::unsetter() */
