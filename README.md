@@ -37,11 +37,11 @@ $myAudiHandler->getServicePlan();
 ```
 Get cost tracker entries
 ```php
-$myAudiHandler->loadCosts();
+$myAudiHandler->Entries()->loadCosts();
 ```
 Get journal entries
 ```php
-$myAudiHandler->loadJourneys();
+$myAudiHandler->Entries()->loadJourneys();
 ```
 Check auxiliar clima status
 ```php
